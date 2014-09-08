@@ -1,4 +1,4 @@
-qunit-amd-runner
+QUnit AMD runner
 =============
 
 Unit tests runner based on phantomjs supporting AMD pattern. 
