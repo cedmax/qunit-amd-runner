@@ -1,6 +1,6 @@
 {
   "name": "qunit-amd-runner",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "unit tests runner based on phantomjs supporting AMD pattern",
   "main": "runner.js",
   "scripts": {

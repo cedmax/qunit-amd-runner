@@ -119,7 +119,7 @@ module.exports = function(testOpt, done, coverage){
 
 				var testRunning = false;
 
-				page.open(__dirname +'/assets/empty.html', function(){
+				page.open(__dirname +'/../assets/empty.html', function(){
 					if (testRunning) {
 						return;
 					}
