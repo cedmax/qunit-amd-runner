@@ -43,6 +43,21 @@ module.exports = function(testOpt, done, coverage){
 			}
 		}
 
+		function configureQUnit(page, test){
+			phantomHelper.evaluate(page, function(qunitConf) {
+				QUnit.init();
+				QUnit.config.blocking = false;
+				QUnit.config.requireExpects = true;
+				QUnit.config.autorun = false;
+
+				for (var props in qunitConf) {
+					if (qunitConf.hasOwnProperty(props)) {
+						QUnit.config[props] = qunitConf[props];
+					}
+				}
+			}, testOpt.qunit);
+		}
+
 		function initRequire(page, test){
 			phantomHelper.evaluate(page, function(requireConf, paths, test) {
 				if (requireConf) {
@@ -82,7 +97,7 @@ module.exports = function(testOpt, done, coverage){
 			});
 		}
 
-		function exectuteTests(file, queue) {
+		function executeTests(file, queue) {
 			return phantom.createPage(function(e, page) {
 
 				page.onConsoleMessage = function(text){
@@ -99,7 +114,7 @@ module.exports = function(testOpt, done, coverage){
 
 				page.onError = function(e){
 					logger.log(JSON.stringify(e, null, 4));
-					done(1);
+					done(false);
 				};
 
 				var testRunning = false;
@@ -126,11 +141,7 @@ module.exports = function(testOpt, done, coverage){
 							window.onerror = function(){
 								current.failure++;
 							};
-							QUnit.init();
-							QUnit.config.blocking = false;
-							QUnit.config.requireExpects = true;
-							QUnit.config.autorun = false;
-
+							
 							QUnit.testStart = function(obj){
 								testRunning = obj.name;
 								console.log('logger.trace("'+ obj.name.replace(/\"/g, '\\"') +'".bold)');
@@ -144,33 +155,33 @@ module.exports = function(testOpt, done, coverage){
 									actual = testResult.actual,
 									message = testResult.message,
 									makeCliFriendly = function (input) {
-										// Return the string 'isNaN' if that is the case
 										if (input.toString() === 'isNaN' && typeof input !== 'string') {
 											return 'isNaN';
-										// Return the string undefined if input is undefined
 										} else if (typeof input === 'undefined') {
 											return 'undefined';
-										// Return indication for JSON.parse to run and the stringified content
+										} else if (typeof input === 'string') {
+											return input;
 										} else {
 											return JSON.stringify(input);
 										}
 									}
 
 								if (result) {
-									console.log('logger.info("'+ (message || 'test successful').replace(/\"/g, '\\"') +'")');
+									console.log('logger.info("'+ (message || 'test successful').replace(/([^\\])(\")/g, '$1\\"') +'")');
 								} else {
-									console.log('logger.error("'+ (message || 'test failed').replace(/\n/g, '\\n').replace(/\"/g, '\\"') +'")');
+									console.log('logger.error("'+ (message || 'test failed').replace(/\n/g, '\\n').replace(/([^\\])(\")/g, '$1\\"') +'")');
 
 									if (typeof expected!== 'undefined') {
-										console.log('logger.error(" expected: '+ makeCliFriendly(expected).replace(/\"/g, '\\"') +'")');
+										console.log('logger.error(" expected: '+ makeCliFriendly(expected).replace(/([^\\])(\")/g, '$1\\"') +'")');
 									}
 									if (typeof actual!== 'undefined') {
-										console.log('logger.error(" actual: '+ makeCliFriendly(actual).replace(/\"/g, '\\"') + '")');
+										console.log('logger.error(" actual: '+ makeCliFriendly(actual).replace(/([^\\])(\")/g, '$1\\"') + '")');
 									}
 								}
 							};
 						}, function(){
 							initRequire(page, file);
+							configureQUnit(page)
 
 							phantomHelper.waitFor(page, function(){
 								return !QUnit.config.queue.length;
@@ -202,7 +213,7 @@ module.exports = function(testOpt, done, coverage){
 				logger.warn('TESTING:' + file);
 				logger.log('');
 			}
-			exectuteTests(file, queue);
+			executeTests(file, queue);
 		}
 
 		function initialize(files){
