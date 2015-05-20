@@ -40,18 +40,14 @@ if (typeof module !=="undefined" && module.exports) {
 				condition = false,
 				interval = setInterval(function() {
 						page.evaluate(testFx, function(err, condition){
-							if ((new Date().getTime() - start < maxtimeOutMillis)) {
+							if ( (new Date().getTime() - start) < maxtimeOutMillis ) {
 								if (condition) {
 									clearInterval(interval);
 									onReady();
+									onReady = function(){};
 								}
 							} else {
-								if(!condition) {
-									onFail();
-								} else {
-									clearInterval(interval);
-									onReady();
-								}
+								onFail();
 							}
 						});
 				}, 150);

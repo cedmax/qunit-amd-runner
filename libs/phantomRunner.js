@@ -132,7 +132,6 @@ module.exports = function(testOpt, done, coverage){
 
 					injectDependency(page, dependencies, function(){
 						page.evaluate(function(){
-							var testRunning;
 							current = {
 								success: 0,
 								failure: 0
@@ -143,7 +142,6 @@ module.exports = function(testOpt, done, coverage){
 							};
 							
 							QUnit.testStart = function(obj){
-								testRunning = obj.name;
 								console.log('logger.trace("'+ obj.name.replace(/\"/g, '\\"') +'".bold)');
 							};
 
@@ -186,17 +184,14 @@ module.exports = function(testOpt, done, coverage){
 							phantomHelper.waitFor(page, function(){
 								return !QUnit.config.queue.length;
 							}, function(){
-								if (page) {
-									page.evaluate(function(){
-										if (window.__coverage__){
-											current.__coverage__ = window.__coverage__;
-										}
-										return current;
-									}, function(e, result) {
-										page = null;
-										handleResults(file, result, queue);
-									});
-								}
+								page.evaluate(function(){
+									if (window.__coverage__){
+										current.__coverage__ = window.__coverage__;
+									}
+									return current;
+								}, function(e, result) {
+									handleResults(file, result, queue);
+								});
 							}, function(){
 								logger.error('script timeout');
 								done(false);
