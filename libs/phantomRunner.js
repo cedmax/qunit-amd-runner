@@ -124,7 +124,7 @@ module.exports = function(testOpt, done, coverage){
 						return;
 					}
 					testRunning = true;
-					var dependencies = [__dirname + '/helper.js', __dirname +'/../node_modules/qunitjs/qunit/qunit.js'];
+					var dependencies = [__dirname + '/helper.js', require.resolve('qunitjs')];
 
 					if (testOpt.include) {
 						dependencies = dependencies.concat(testOpt.include.map(function(f){ return cwd + '/' + f; }));
@@ -162,7 +162,7 @@ module.exports = function(testOpt, done, coverage){
 										} else {
 											return JSON.stringify(input);
 										}
-									}
+									};
 
 								if (result) {
 									console.log('logger.info("'+ (message || 'test successful').replace(/([^\\])(\")/g, '$1\\"') +'")');
@@ -179,7 +179,7 @@ module.exports = function(testOpt, done, coverage){
 							};
 						}, function(){
 							initRequire(page, file);
-							configureQUnit(page)
+							configureQUnit(page);
 
 							phantomHelper.waitFor(page, function(){
 								return !QUnit.config.queue.length;
