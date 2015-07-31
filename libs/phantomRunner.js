@@ -2,6 +2,7 @@
 
 var phantomHelper = require('./helper.js');
 var logger = require('chip')();
+var glob = require('glob-expand');
 require('colors');
 
 var prefixes = logger.getPrefixes();
@@ -222,6 +223,7 @@ module.exports = function(testOpt, done, coverage){
 			return files;
 		}
 
+		testOpt.tests = glob(testOpt.tests);
 		var queue = initialize(testOpt.tests);
 		loadSuite(queue.shift(), queue);
 	};

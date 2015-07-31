@@ -1,6 +1,6 @@
 {
   "name": "qunit-amd-runner",
-  "version": "1.2.4",
+  "version": "1.3.0",
   "description": "unit tests runner based on phantomjs supporting AMD pattern",
   "main": "runner.js",
   "scripts": {
@@ -23,7 +23,8 @@
     "npm": "~1.3.14",
     "parent-require": "^1.0.0",
     "qunitjs": "~1.11.0",
-    "requirejs": "2.1.8"
+    "requirejs": "2.1.8",
+    "glob-expand": "^0.1.0"
   },
   "homepage": "https://github.com/cedmax/qunit-amd-runner"
 }
