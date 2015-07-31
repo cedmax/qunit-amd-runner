@@ -12,7 +12,7 @@ Offers a node API ready to be integrated in other scripts (grunt/gulp plugins, c
 
 ## Usage
  
-```
+```js
 var testRunner = require('qunit-amd-runner');
 
 testRunner({
@@ -60,5 +60,6 @@ Read the [RequireJS documentation](http://www.requirejs.org/)
 
 ### Callback
 Type: `function`
+
 A callback function to be invoked at the end of the tests exection.
 The result is a falsy value if tests failed.
