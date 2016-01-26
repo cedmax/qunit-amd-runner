@@ -13,7 +13,7 @@ module.exports = function(launchPhantom){
 				var npm = require('npm');
 				npm.load(npm.config, function (err) {
 					if (err) { logger.error(err); }
-					npm.commands.install(['phantomjs'], function (err) {
+					npm.commands.install(['phantomjs@1.9.19'], function (err) {
 						if (err) { logger.error(err); }
 						launchPhantom(prequire('phantomjs').path);
 					});
